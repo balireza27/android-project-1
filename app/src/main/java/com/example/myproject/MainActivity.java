@@ -1,54 +1,91 @@
 package com.example.myproject;
 
-import android.app.assist.AssistStructure;
-import android.content.Intent;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Toast;
-
-import androidx.activity.EdgeToEdge;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 public class MainActivity extends AppCompatActivity {
+
+    EditText editTextNumber1, editTextNumber2, editTextResult;
+    Button buttonAdd, buttonSubtract, buttonMultiply, buttonDivide;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_main);
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-            return insets;
 
+        editTextNumber1 = findViewById(R.id.editTextNumber1);
+        editTextNumber2 = findViewById(R.id.editTextNumber2);
+        editTextResult = findViewById(R.id.editTextResult);
 
+        buttonAdd = findViewById(R.id.buttonAdd);
+        buttonSubtract = findViewById(R.id.buttonSubtract);
+        buttonMultiply = findViewById(R.id.buttonMultiply);
+        buttonDivide = findViewById(R.id.buttonDivide);
 
-        });
-
-        EditText edtuser = findViewById(R.id.edituser);
-        EditText edtpass = findViewById(R.id.editpass);
-
-
-        Button btn = findViewById(R.id.button);
-        btn.setOnClickListener(new View.OnClickListener() {
+        buttonAdd.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-            String sUser = edtuser.getText().toString().trim();
-            String sPass = edtpass.getText().toString().trim();
-
-            Intent intent = new Intent(MainActivity.this, InfoActivity.class);
-            intent.putExtra("user",sUser);
-            intent.putExtra("password",sPass);
-            startActivity(intent);
+            public void onClick(View view) {
+                calculate('+');
             }
         });
 
+        buttonSubtract.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calculate('-');
+            }
+        });
 
+        buttonMultiply.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calculate('*');
+            }
+        });
+
+        buttonDivide.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                calculate('/');
+            }
+        });
+    }
+
+    private void calculate(char operator) {
+        String num1Str = editTextNumber1.getText().toString();
+        String num2Str = editTextNumber2.getText().toString();
+
+        if (num1Str.isEmpty() || num2Str.isEmpty()) {
+            editTextResult.setText("لطفاً اعداد را وارد کنید");
+            return;
+        }
+
+        double number1 = Double.parseDouble(num1Str);
+        double number2 = Double.parseDouble(num2Str);
+        double result = 0;
+
+        switch (operator) {
+            case '+':
+                result = number1 + number2;
+                break;
+            case '-':
+                result = number1 - number2;
+                break;
+            case '*':
+                result = number1 * number2;
+                break;
+            case '/':
+                if (number2 == 0) {
+                    editTextResult.setText("تقسیم بر صفر مجاز نیست");
+                    return;
+                }
+                result = number1 / number2;
+                break;
+        }
+
+        editTextResult.setText(String.valueOf(result));
     }
 }
